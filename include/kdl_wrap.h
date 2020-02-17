@@ -13,6 +13,8 @@
 #include <kdl/chaindynparam.hpp>
 #include <chainJntToJacDotSolver.h>
 
+#include <state.h>
+
 //just for vscode indexer
 #include </opt/ros/kinetic/include/kdl/frames.hpp>
 #include </opt/ros/kinetic/include/kdl/jacobian.hpp>
@@ -51,6 +53,9 @@ protected:
   // Eigen::Matrix<double, 6, 1> jdqd;
   // Eigen::Matrix<double, 6, 1> w_l_base;
   // Eigen::MatrixXd jacInv;
+
+  // Other
+  State state = State();
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
