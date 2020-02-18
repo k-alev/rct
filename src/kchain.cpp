@@ -11,13 +11,14 @@ kchain::kchain(std::string robot_description, std::string base_name, std::string
 void kchain::get_status()
 {
     compute_state_ee();
+    //should return status
 }
 
 void kchain::compute_state_ee()
 {
     pos2ee();
     vel2ee();
-    acc2ee();
+    // acc2ee();
 }
 
 void kchain::pos2ee()
