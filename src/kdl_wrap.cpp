@@ -12,15 +12,15 @@ _robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name},
   q_dq_array.resize(chain.getNrOfJoints());
 
   jac.resize(chain.getNrOfJoints());
-  J = jac.data;
+  status.J = jac.data;
   // jacInv.resize(chain.getNrOfJoints(),6);
 
   v.resize(chain.getNrOfJoints());
   torque.resize(chain.getNrOfJoints());
   fext.resize(chain.getNrOfSegments());
 
-  q_conf.resize(chain.getNrOfJoints(),1);
-  dq_conf.resize(chain.getNrOfJoints(),1);
+  status.q_conf.resize(chain.getNrOfJoints(),1);
+  status.dq_conf.resize(chain.getNrOfJoints(),1);
 
 }
 
@@ -48,7 +48,7 @@ void kdl_wrap::compute_jac_kdl()
 void kdl_wrap::compute_jac()
 {
   compute_jac_kdl();
-  J = jac.data;
+  status.J = jac.data;
 }
 
 void kdl_wrap::compute_djac_kdl()
@@ -60,7 +60,7 @@ void kdl_wrap::compute_djac_kdl()
 void kdl_wrap::compute_djac()
 {
   compute_djac_kdl();
-  KDL2EigenVec(jdot_qdot, dJdq);
+  KDL2EigenVec(jdot_qdot, status.dJdq);
 }
 
 void kdl_wrap::compute_fk_kdl()
@@ -71,11 +71,11 @@ void kdl_wrap::compute_fk_kdl()
 
 void kdl_wrap::compute_fk()
 {
-  convert_jarray(q, q_conf);
-  convert_jarray(dq, dq_conf);
+  convert_jarray(q, status.q_conf);
+  convert_jarray(dq, status.dq_conf);
   compute_fk_kdl();
-  KDL2EigenVec(state_frame, state.pos, state.vel, R);
-  unwrap_rotation(state.pos, xold, cntr);
+  KDL2EigenVec(state_frame, status.frame.pos, status.frame.vel, status.R);
+  unwrap_rotation(status.frame.pos, xold, cntr);
 }
 
 void kdl_wrap::update()
@@ -100,7 +100,7 @@ void kdl_wrap::update_start()
   // and everything else that needs initialization at contoller.starting()
 }
 
-void kdl_wrap::get_command_id(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq)
 {
   convert_jarray(ddx, v);
   compute_id_kdl();

@@ -7,7 +7,6 @@
 #include <Eigen/Dense>
 
 
-
 int main(int argc, char const *argv[])
 {
     std::cout<<"Hello World!"<<std::endl;
@@ -25,12 +24,16 @@ int main(int argc, char const *argv[])
     // test 1
     Eigen::Matrix<double, 6, 1> ddx_cmd;
     Eigen::Matrix<double, 6, 1> trq;
-    wrapper.get_command_id(ddx_cmd, trq);
+    wrapper.get_inv_dynamics_cmd(ddx_cmd, trq);
     // robot.set_command(trq)
 
     rct::kchain myChain = rct::kchain(str, root, ee, -10);
     myChain.update();
-    myChain.get_state_ee();
+    myChain.get_status();
+
+    // using takis = rct::Status;
+    // rct::Status status = rct::Status();
+    // takis takus = takis();
     
     return 0;
 }

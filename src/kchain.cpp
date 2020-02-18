@@ -8,7 +8,12 @@ kchain::kchain(std::string robot_description, std::string base_name, std::string
     std::cout << "Chain Constructed!!!" << std::endl;
 }
 
-void kchain::get_state_ee()
+void kchain::get_status()
+{
+    compute_state_ee();
+}
+
+void kchain::compute_state_ee()
 {
     // Rt = R.transpose()
     pos2ee();
@@ -18,29 +23,26 @@ void kchain::get_state_ee()
 
 void kchain::pos2ee()
 {
-    state_ee.pos.segment<3>(0) = R.transpose()*state.pos.segment<3>(0);
-    // quaternions are missing
+    x_ee = R_T*x;
+    // // quaternions are missing
 }
 
 void kchain::vel2ee()
 {   
-    state_ee.vel.segment<3>(0) = R.transpose()*(state.vel.segment<3>(0) - state.vel.segment<3>(2).cross(state.pos.segment<3>(0)));
-    state_ee.vel.segment<3>(2) = R.transpose()*state.vel.segment<3>(2);
+    dx_ee = R_T*(dx - w.cross(x));
+    w_ee = R_T*w;
 }
 
 void kchain::acc2ee()
 {
-    state_ee.acc.segment<3>(0) = R.transpose()*(state.acc.segment<3>(0) -2*state.vel.segment<3>(2).cross(R*state_ee.vel.segment<3>(0)) 
-     - state.acc.segment<3>(2).cross(state.pos.segment<3>(2)) -  state.vel.segment<3>(2).cross(state.vel.segment<3>(2).cross(state.pos.segment<3>(0))));
-    state_ee.acc.segment<3>(2) = R.transpose()*(state.acc.segment<3>(2) - state.vel.segment<3>(2).cross(state.vel.segment<3>(2)));
+    ddx_ee = R_T*(ddx -2*w.cross(R*dx_ee) - dw.cross(x) -  w.cross(w.cross(x)));
+    dw_ee = R_T*(dw - w.cross(w));
 }
 
 void kchain::acc2base()
 {
-    state.acc.segment<3>(0) = R*state_ee.acc.segment<3>(0) -2*state.vel.segment<3>(2).cross(R*state_ee.vel.segment<3>(0)) 
-     - state.acc.segment<3>(2).cross(state.pos.segment<3>(2)) -  state.vel.segment<3>(2).cross(state.vel.segment<3>(2).cross(state.pos.segment<3>(0)));
-
-    state.acc.segment<3>(2) = R*state_ee.acc.segment<3>(2) + state.vel.segment<3>(2).cross(state.vel.segment<3>(2));
+    ddx = R*ddx_ee -2*w.cross(R*dx) - dw.cross(x) -  w.cross(w.cross(x));
+    dw<3>(2) = R*dw_ee + w.cross(w);
 }
 
 

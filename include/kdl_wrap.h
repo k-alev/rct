@@ -13,7 +13,7 @@
 #include <kdl/chaindynparam.hpp>
 #include <chainJntToJacDotSolver.h>
 
-#include <state.h>
+#include <status.h>
 
 //just for vscode indexer
 #include </opt/ros/kinetic/include/kdl/frames.hpp>
@@ -36,23 +36,25 @@ public:
   //Functions
   void update();
   void update_start();
-  void get_command_id(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq);
+  void get_admittance_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot);
 
 protected:
   // Eigen declarations
-  Eigen::Matrix<double, 6, 1> xold;
-  Eigen::MatrixXd J;
-  Eigen::Matrix<double,6,1> dJdq;
-  Eigen::Matrix<double,3,3> R;
-  Eigen::MatrixXd q_conf;
-  Eigen::MatrixXd dq_conf;  
-  // Eigen::Quaternion quat = Eigen::Quaternion(0,0,0,1);
-  // Eigen::Matrix<double, 6, 1> jdqd;
-  // Eigen::Matrix<double, 6, 1> w_l_base;
-  // Eigen::MatrixXd jacInv;
+  // Eigen::MatrixXd J;
+  // Eigen::Matrix<double,6,1> dJdq;
+  // Eigen::Matrix<double,3,3> R;
+  // Eigen::MatrixXd q_conf;
+  // Eigen::MatrixXd dq_conf;  
+  // // Eigen::Quaternion quat = Eigen::Quaternion(0,0,0,1);
+  // // Eigen::Matrix<double, 6, 1> jdqd;
+  // // Eigen::Matrix<double, 6, 1> w_l_base;
+  // // Eigen::MatrixXd jacInv;
 
-  // Other
-  State state = State();
+  // // Other
+  Status status = Status();
+  // State state = State();
+  // State state_ee = State();
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -65,6 +67,7 @@ private:
   void compute_djac();
   
   void update_state();
+  //auta edw mporoun na ginoun utils h allh class...den exoun sxesh me auth tn class
   void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> &x, Eigen::Matrix<double, 6, 1> &dx, Eigen::Matrix<double, 3, 3> &R);
   void KDL2EigenVec(const KDL::Twist &twist, Eigen::Matrix<double, 6, 1> &vec);
   void KDLRot2Mat(const KDL::Rotation &rot, Eigen::Matrix<double, 3, 3> &mat);
@@ -97,6 +100,7 @@ private:
   std::string _base_name; 
   std::string _ee_name;
   double _g;
+  Eigen::Matrix<double, 6, 1> xold;
 
 };
 } // namespace rct
