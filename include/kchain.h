@@ -25,24 +25,24 @@ private:
     void acc2base();
 
     //aliases
-    Eigen::Matrix<double, 3, 1> & x = status.frame.pos.segment<3>(0);
-    Eigen::Matrix<double, 3, 1> & dx = status.frame.vel.segment<3>(0); 
-    Eigen::Matrix<double, 3, 1> & ddx = status.frame.acc.segment<3>(0);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> x = status.frame.pos.segment<3>(0);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> dx = status.frame.vel.segment<3>(0); 
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> ddx = status.frame.acc.segment<3>(0);
 
-    Eigen::Matrix<double, 3, 1> & quat = status.frame.pos.segment<3>(2);
-    Eigen::Matrix<double, 3, 1> & w = status.frame.vel.segment<3>(2); 
-    Eigen::Matrix<double, 3, 1> & dw = status.frame.acc.segment<3>(2);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> quat = status.frame.pos.segment<3>(2);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> w = status.frame.vel.segment<3>(2); 
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> dw = status.frame.acc.segment<3>(2);
 
-    Eigen::Matrix<double, 3, 1> & x_ee = status.frame_ee.pos.segment<3>(0);
-    Eigen::Matrix<double, 3, 1> & dx_ee = status.frame_ee.vel.segment<3>(0); 
-    Eigen::Matrix<double, 3, 1> & ddx_ee = status.frame_ee.acc.segment<3>(0);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> x_ee = status.frame_ee.pos.segment<3>(0);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> dx_ee = status.frame_ee.vel.segment<3>(0); 
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> ddx_ee = status.frame_ee.acc.segment<3>(0);
 
-    Eigen::Matrix<double, 3, 1> & quat_ee = status.frame_ee.pos.segment<3>(2);
-    Eigen::Matrix<double, 3, 1> & w_ee = status.frame_ee.vel.segment<3>(2); 
-    Eigen::Matrix<double, 3, 1> & dw_ee = status.frame_ee.acc.segment<3>(2);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> quat_ee = status.frame_ee.pos.segment<3>(2);
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> w_ee = status.frame_ee.vel.segment<3>(2); 
+    Eigen::Ref<Eigen::Matrix<double, 3, 1>> dw_ee = status.frame_ee.acc.segment<3>(2);
     
-    Eigen::Matrix<double, 3, 3> & R = status.R;
-    Eigen::Matrix<double, 3, 3> & R_T = status.R.transpose();                
+    Eigen::Ref<Eigen::Matrix<double, 3, 3>> R = status.R;
+    Eigen::Matrix<double, 3, 3> R_T = status.R.transpose();  
 
 };
 

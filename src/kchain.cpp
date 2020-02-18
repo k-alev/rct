@@ -15,7 +15,6 @@ void kchain::get_status()
 
 void kchain::compute_state_ee()
 {
-    // Rt = R.transpose()
     pos2ee();
     vel2ee();
     acc2ee();
@@ -42,7 +41,7 @@ void kchain::acc2ee()
 void kchain::acc2base()
 {
     ddx = R*ddx_ee -2*w.cross(R*dx) - dw.cross(x) -  w.cross(w.cross(x));
-    dw<3>(2) = R*dw_ee + w.cross(w);
+    dw = R*dw_ee + w.cross(w);
 }
 
 
