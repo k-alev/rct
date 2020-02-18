@@ -74,8 +74,8 @@ void kdl_wrap::compute_fk()
   convert_jarray(q, q_conf);
   convert_jarray(dq, dq_conf);
   compute_fk_kdl();
-  KDL2EigenVec(state_frame, x, dx, R);
-  unwrap_rotation(x, xold, cntr);
+  KDL2EigenVec(state_frame, state.pos, state.vel, R);
+  unwrap_rotation(state.pos, xold, cntr);
 }
 
 void kdl_wrap::update()
@@ -133,7 +133,6 @@ void kdl_wrap::KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<doub
 
   //state_frame.M.R.GetRPY(x(3), x(4), x(5));
   state_frame.M.R.GetQuaternion(x(3), x(4), x(5), eta);
-  state_frame.M.R.GetQuaternion(state.pos(3), state.pos(4), state.pos(5), eta);
   // quat.x() = x(3);
   // quat.y() = x(4);
   // quat.z() = x(5);

@@ -28,7 +28,9 @@ int main(int argc, char const *argv[])
     wrapper.get_command_id(ddx_cmd, trq);
     // robot.set_command(trq)
 
-    rct::kchain myChain = rct::kchain(str, root, ee, 90);
+    rct::kchain myChain = rct::kchain(str, root, ee, -10);
+    myChain.update();
+    myChain.get_state_ee();
     
     return 0;
 }

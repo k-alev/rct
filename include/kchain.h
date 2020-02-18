@@ -13,11 +13,17 @@ class kchain : public kdl_wrap
 {
 public:
     kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv);
+    
     void get_state_ee();
     void get_state();
-    void get_rotation();
 
-// private:
+    State state_ee = State();
+
+private:
+    void pos2ee();
+    void vel2ee();
+    void acc2ee();
+    void acc2base();
 
 };
 

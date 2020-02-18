@@ -40,9 +40,6 @@ public:
 
 protected:
   // Eigen declarations
-  Eigen::Matrix<double, 6, 1> x;
-  Eigen::Matrix<double, 6, 1> dx;
-  Eigen::Matrix<double, 6, 1> ddx;
   Eigen::Matrix<double, 6, 1> xold;
   Eigen::MatrixXd J;
   Eigen::Matrix<double,6,1> dJdq;
