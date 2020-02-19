@@ -6,9 +6,9 @@ project(ros_control_toolbox)
 #include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(rct_lib STATIC
-  #include/kdl_wrap.h
   src/kdl_wrap.cpp
   src/kchain.cpp
+  src/robot.cpp
   src/utils.cpp
   src/chainJntToJacDotSolver.cpp
 	)

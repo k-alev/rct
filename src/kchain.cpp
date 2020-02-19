@@ -2,15 +2,17 @@
 
 namespace rct
 {
-kchain::kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv) 
-: kdl_wrap{robot_description, base_name, ee_name, grv}
+kchain::kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv)
+    : kdl_wrap{robot_description, base_name, ee_name, grv}
 {
     std::cout << "Chain Constructed!!!" << std::endl;
 }
 
 void kchain::get_status()
 {
-    compute_state_ee();
+    update();
+    if (1)
+        compute_state_ee(); // optional, if not it just returns the copied kdl status
     //should return status
 }
 
@@ -23,27 +25,26 @@ void kchain::compute_state_ee()
 
 void kchain::pos2ee()
 {
-    x_ee = R_T*x;
+    x_ee = R_T * x;
     // quaternions are missing
 }
 
 void kchain::vel2ee()
-{   
-    dx_ee = R_T*(dx - w.cross(x));
-    w_ee = R_T*w;
+{
+    dx_ee = R_T * (dx - w.cross(x));
+    w_ee = R_T * w;
 }
 
 void kchain::acc2ee()
 {
-    ddx_ee = R_T*(ddx -2*w.cross(R*dx_ee) - dw.cross(x) -  w.cross(w.cross(x)));
-    dw_ee = R_T*(dw - w.cross(w));
+    ddx_ee = R_T * (ddx - 2 * w.cross(R * dx_ee) - dw.cross(x) - w.cross(w.cross(x)));
+    dw_ee = R_T * (dw - w.cross(w));
 }
 
 void kchain::acc2base()
 {
-    ddx = R*ddx_ee -2*w.cross(R*dx) - dw.cross(x) -  w.cross(w.cross(x));
-    dw = R*dw_ee + w.cross(w);
+    ddx = R * ddx_ee - 2 * w.cross(R * dx) - dw.cross(x) - w.cross(w.cross(x));
+    dw = R * dw_ee + w.cross(w);
 }
-
 
 } // namespace rct

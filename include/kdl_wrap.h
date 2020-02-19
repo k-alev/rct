@@ -26,8 +26,6 @@ public:
   kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv = -9.81);
   ~kdl_wrap();
   //Functions
-  void update();
-  void update_start();
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq);
   void get_admittance_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot);
 
@@ -38,12 +36,17 @@ protected:
   // Eigen::Matrix<double,3,3> R;
   // Eigen::MatrixXd q_conf;
   // Eigen::MatrixXd dq_conf;  
-  // Eigen::Quaterniond quat;// = Eigen::Quaternion();
   // // Eigen::Matrix<double, 6, 1> jdqd;
   // // Eigen::Matrix<double, 6, 1> w_l_base;
   // // Eigen::MatrixXd jacInv;
-
+  
+  void set_state();
+  void update();
+  void update_start();
   Status status = Status();
+  KDL::JntArray q;
+  KDL::JntArray dq;
+  KDL::Wrench ft;
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -54,7 +57,6 @@ private:
   void compute_fk();
   void compute_djac_kdl();
   void compute_djac();
-  void set_state();
   
   //KDL declarations
   KDL::ChainFkSolverVel_recursive *fksolver;
@@ -63,8 +65,6 @@ private:
   KDL::ChainJntToJacDotSolver *jacdotsolver;
   // KDL::ChainDynParam *chDynParam;
   KDL::Chain chain;
-  KDL::JntArray q;
-  KDL::JntArray dq;
   KDL::JntArrayVel q_dq_array;
   KDL::JntArray v;
   KDL::JntArray torque;

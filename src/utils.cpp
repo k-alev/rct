@@ -2,14 +2,14 @@
 
 namespace rct
 {
-void convert_jarray(const KDL::Chain chain, const Eigen::MatrixXd &con, KDL::JntArray &var)
+void convert_jarray(const KDL::Chain &chain, const Eigen::MatrixXd &con, KDL::JntArray &var)
 {
     if (con.rows() != chain.getNrOfJoints() || con.cols() != 1)
         throw std::length_error("invalid matrix shape");
     var.data = con;
 }
 
-void convert_jarray(const KDL::Chain chain, const KDL::JntArray &con, Eigen::MatrixXd &var)
+void convert_jarray(const KDL::Chain &chain, const KDL::JntArray &con, Eigen::MatrixXd &var)
 {
     if (var.rows() != chain.getNrOfJoints() || var.cols() != 1)
         throw std::length_error("invalid matrix shape");

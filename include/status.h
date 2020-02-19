@@ -23,7 +23,6 @@ public:
 
 // private:
 
-
 };
 
 
@@ -41,7 +40,6 @@ public:
     Eigen::MatrixXd q_conf;
     Eigen::MatrixXd dq_conf;
     Eigen::Quaterniond quat = Eigen::Quaterniond(0,0,0,1);  
-    // Eigen::Matrix<double, 6, 1> jdqd;
     // Eigen::Matrix<double, 6, 1> w_l_base;
     // Eigen::MatrixXd jacInv;
 
