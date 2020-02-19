@@ -39,8 +39,8 @@ public:
     Eigen::Matrix<double,6,1> dJdq;
     Eigen::Matrix<double,3,3> R;
     Eigen::MatrixXd q_conf;
-    Eigen::MatrixXd dq_conf;  
-    // Eigen::Quaternion quat = Eigen::Quaternion(0,0,0,1);
+    Eigen::MatrixXd dq_conf;
+    Eigen::Quaterniond quat = Eigen::Quaterniond(0,0,0,1);  
     // Eigen::Matrix<double, 6, 1> jdqd;
     // Eigen::Matrix<double, 6, 1> w_l_base;
     // Eigen::MatrixXd jacInv;

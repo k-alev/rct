@@ -16,9 +16,9 @@ void convert_jarray(const KDL::Chain chain, const KDL::JntArray &con, Eigen::Mat
     var = con.data;
 }
 
-void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> &x, Eigen::Matrix<double, 6, 1> &dx, Eigen::Matrix<double, 3, 3> &R)
+void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> &x, Eigen::Matrix<double, 6, 1> &dx, Eigen::Matrix<double, 3, 3> &R, Eigen::Quaterniond &Q)
 {
-    double eta;
+    // double eta;
     for (unsigned int i = 0; i < 3; i++)
     {
         x(i) = state_frame.p.p[i];
@@ -27,11 +27,10 @@ void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> 
     }
 
     //state_frame.M.R.GetRPY(x(3), x(4), x(5));
-    state_frame.M.R.GetQuaternion(x(3), x(4), x(5), eta);
-    // quat.x() = x(3);
-    // quat.y() = x(4);
-    // quat.z() = x(5);
-    // quat.w() = eta;
+    state_frame.M.R.GetQuaternion(x(3), x(4), x(5), Q.w());
+    Q.x() = x(3);
+    Q.y() = x(4);
+    Q.z() = x(5);
 
     KDLRot2Mat(state_frame.M.R, R);
     return;

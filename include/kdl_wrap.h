@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #include <kdl_parser/kdl_parser.hpp>
 #include <kdl/frames.hpp>
@@ -37,7 +38,7 @@ protected:
   // Eigen::Matrix<double,3,3> R;
   // Eigen::MatrixXd q_conf;
   // Eigen::MatrixXd dq_conf;  
-  // // Eigen::Quaternion quat = Eigen::Quaternion(0,0,0,1);
+  // Eigen::Quaterniond quat;// = Eigen::Quaternion();
   // // Eigen::Matrix<double, 6, 1> jdqd;
   // // Eigen::Matrix<double, 6, 1> w_l_base;
   // // Eigen::MatrixXd jacInv;
@@ -53,8 +54,7 @@ private:
   void compute_fk();
   void compute_djac_kdl();
   void compute_djac();
-  
-  void update_state();
+  void set_state();
   
   //KDL declarations
   KDL::ChainFkSolverVel_recursive *fksolver;

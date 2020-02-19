@@ -74,19 +74,19 @@ void kdl_wrap::compute_fk()
   convert_jarray(chain, q, status.q_conf);
   convert_jarray(chain, dq, status.dq_conf);
   compute_fk_kdl();
-  KDL2EigenVec(state_frame, status.frame.pos, status.frame.vel, status.R);
+  KDL2EigenVec(state_frame, status.frame.pos, status.frame.vel, status.R, status.quat);
   unwrap_rotation(status.frame.pos, xold, cntr);
 }
 
 void kdl_wrap::update()
 {
-  update_state();
+  set_state();
   compute_fk();
   compute_jac();
   compute_djac();
 }
 
-void kdl_wrap::update_state()
+void kdl_wrap::set_state()
 {
   std::cout << "Theoretically q,dq,f.. are updated" << std::endl;
   q_dq_array.q = q;
