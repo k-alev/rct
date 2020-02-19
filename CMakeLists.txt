@@ -9,6 +9,7 @@ add_library(rct_lib STATIC
   #include/kdl_wrap.h
   src/kdl_wrap.cpp
   src/kchain.cpp
+  src/utils.cpp
   src/chainJntToJacDotSolver.cpp
 	)
 #target_include_directories(low_level_lib

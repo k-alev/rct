@@ -14,6 +14,7 @@
 #include <chainJntToJacDotSolver.h>
 
 #include <status.h>
+#include <utils.h>
 
 namespace rct
 {
@@ -41,10 +42,7 @@ protected:
   // // Eigen::Matrix<double, 6, 1> w_l_base;
   // // Eigen::MatrixXd jacInv;
 
-  // // Other
   Status status = Status();
-  // State state = State();
-  // State state_ee = State();
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -57,13 +55,6 @@ private:
   void compute_djac();
   
   void update_state();
-  //auta edw mporoun na ginoun utils h allh class...den exoun sxesh me auth tn class
-  void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> &x, Eigen::Matrix<double, 6, 1> &dx, Eigen::Matrix<double, 3, 3> &R);
-  void KDL2EigenVec(const KDL::Twist &twist, Eigen::Matrix<double, 6, 1> &vec);
-  void KDLRot2Mat(const KDL::Rotation &rot, Eigen::Matrix<double, 3, 3> &mat);
-  void unwrap_rotation(Eigen::Matrix<double, 6, 1> &x, Eigen::Matrix<double, 6, 1> &xold, std::vector<int> &counter);
-  void convert_jarray(const Eigen::MatrixXd &ddx, KDL::JntArray &var);
-  void convert_jarray(const KDL::JntArray &con, Eigen::MatrixXd &var);
   
   //KDL declarations
   KDL::ChainFkSolverVel_recursive *fksolver;
