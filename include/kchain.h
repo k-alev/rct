@@ -4,10 +4,6 @@
 #include <Eigen/Dense>
 #include <kdl_wrap.h>
 
-//just for vscode indexer
-#include <eigen3/Eigen/Dense>
-
-
 namespace rct
 {
 class kchain : public kdl_wrap

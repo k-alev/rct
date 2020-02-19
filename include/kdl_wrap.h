@@ -15,16 +15,6 @@
 
 #include <status.h>
 
-//just for vscode indexer
-#include </opt/ros/kinetic/include/kdl/frames.hpp>
-#include </opt/ros/kinetic/include/kdl/jacobian.hpp>
-#include </opt/ros/kinetic/include/kdl/chainfksolverpos_recursive.hpp>
-#include </opt/ros/kinetic/include/kdl/chainfksolvervel_recursive.hpp>
-#include </opt/ros/kinetic/include/kdl/chainidsolver_recursive_newton_euler.hpp>
-#include </opt/ros/kinetic/include/kdl/chaindynparam.hpp>
-#include </opt/ros/kinetic/include/kdl_parser/kdl_parser.hpp>
-#include <eigen3/Eigen/Dense>
-
 namespace rct
 {
 class kdl_wrap

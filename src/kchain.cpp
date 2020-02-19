@@ -24,7 +24,7 @@ void kchain::compute_state_ee()
 void kchain::pos2ee()
 {
     x_ee = R_T*x;
-    // // quaternions are missing
+    // quaternions are missing
 }
 
 void kchain::vel2ee()
