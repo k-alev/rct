@@ -8,7 +8,6 @@ project(ros_control_toolbox)
 add_library(rct_lib STATIC
   src/kdl_wrap.cpp
   src/kchain.cpp
-  src/robot.cpp
   src/utils.cpp
   src/chainJntToJacDotSolver.cpp
 	)
