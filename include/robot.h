@@ -31,10 +31,9 @@ public:
 
     template <class T>
     void write_to_robot(T handle);
-
-    //perhaps needs to be implemented with variadic templates to take multiple handles as input 
+ 
     template <class T>
-    void read_from_robot(T handle);
+    void read_from_robot(const T& handle);
 
 };
 
