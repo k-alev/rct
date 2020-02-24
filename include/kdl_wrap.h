@@ -27,7 +27,7 @@ public:
   ~kdl_wrap();
   //Functions
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq);
-  void get_admittance_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot);
+  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot);
 
 protected:
   // Eigen declarations
@@ -63,6 +63,7 @@ private:
   KDL::ChainIdSolver_RNE *idsolver;
   KDL::ChainJntToJacSolver *jacsolver;
   KDL::ChainJntToJacDotSolver *jacdotsolver;
+  KDL::ChainJntToJacDotSolver *iksolver;
   // KDL::ChainDynParam *chDynParam;
   KDL::Chain chain;
   KDL::JntArrayVel q_dq_array;

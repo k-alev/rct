@@ -3,8 +3,7 @@
 
 namespace rct
 {
-kdl_wrap::kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv): 
-_robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name}, _g{grv}
+kdl_wrap::kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv) : _robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name}, _g{grv}
 {
   init_solvers(_robot_description, _base_name, _ee_name);
   q.resize(chain.getNrOfJoints());
@@ -19,18 +18,17 @@ _robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name},
   torque.resize(chain.getNrOfJoints());
   fext.resize(chain.getNrOfSegments());
 
-  status.q_conf.resize(chain.getNrOfJoints(),1);
-  status.dq_conf.resize(chain.getNrOfJoints(),1);
-
+  status.q_conf.resize(chain.getNrOfJoints(), 1);
+  status.dq_conf.resize(chain.getNrOfJoints(), 1);
 }
 
 kdl_wrap::~kdl_wrap()
 {
-	delete fksolver;
-	delete idsolver;
-	delete jacsolver;
-	delete jacdotsolver;
-	// delete chDynParam;
+  delete fksolver;
+  delete idsolver;
+  delete jacsolver;
+  delete jacdotsolver;
+  // delete chDynParam;
 }
 
 void kdl_wrap::compute_id_kdl()
@@ -53,8 +51,8 @@ void kdl_wrap::compute_jac()
 
 void kdl_wrap::compute_djac_kdl()
 {
-  if(jacdotsolver->JntToJacDot(q_dq_array,jdot_qdot,-1) < 0)
-	  throw std::runtime_error("KDL jacobian derivative solver failed.");
+  if (jacdotsolver->JntToJacDot(q_dq_array, jdot_qdot, -1) < 0)
+    throw std::runtime_error("KDL jacobian derivative solver failed.");
 }
 
 void kdl_wrap::compute_djac()
@@ -105,6 +103,12 @@ void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd 
   convert_jarray(chain, ddx, v);
   compute_id_kdl();
   convert_jarray(chain, torque, trq);
+}
+
+void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot)
+{
+  qdot = status.J.inverse()*vel;
+  //should implement pinv solver too
 }
 
 void kdl_wrap::init_solvers(std::string robot_description, std::string base_name, std::string ee_name)

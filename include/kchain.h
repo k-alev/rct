@@ -11,14 +11,19 @@ class kchain : public kdl_wrap
 public:
     kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv);
 
-    void get_status();
+    Status get_status(std::string options);
     void acc2ee();
-    void acc2base();
+    void acc2base(const Eigen::VectorXd& ee_acc, Eigen::VectorXd base_acc);
+    void vel2base(const Eigen::VectorXd &ee_vel, Eigen::VectorXd base_vel);
+    void pos2base();
 
 private:
     void compute_state_ee();
     void pos2ee();
     void vel2ee();
+    //perhaps unnecessary
+    void acc2base();
+    void vel2base();
 
     //aliases
     Eigen::Ref<Eigen::Matrix<double, 3, 1>> x = status.frame.pos.segment<3>(0);

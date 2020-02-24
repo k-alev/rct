@@ -16,21 +16,21 @@ public:
     };
 
     template <class T>
-    void read_sensors(T xhandle)
+    void read_sensors(const T& xhandle)
     {
         read_from_robot(xhandle);
         set_state();
     };
 
     template <class T>
-    void send_commands(T xhandle)
+    void send_commands(const T& xhandle)
     {
         write_to_robot(xhandle);
         //other necessary stuff
     };
 
     template <class T>
-    void write_to_robot(T handle);
+    void write_to_robot(const T& handle);
  
     template <class T>
     void read_from_robot(const T& handle);

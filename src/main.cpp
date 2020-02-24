@@ -55,7 +55,7 @@ private:
 };
 
 template <class T>
-void rct::robot::read_from_robot(const T& handle)
+void rct::robot::read_from_robot(const T &handle)
 {
   std::cout << "reading from robot unspecialized" << std::endl;
   // ft.force.data = handle.getForce();
@@ -65,37 +65,39 @@ void rct::robot::read_from_robot(const T& handle)
 namespace rct
 {
 template <>
-void robot::read_from_robot<ForceTorqueSensorHandle>(const ForceTorqueSensorHandle& handle)
+void robot::read_from_robot<ForceTorqueSensorHandle>(const ForceTorqueSensorHandle &handle)
 {
   const double *tmp_frc, *tmp_trq;
 
   tmp_frc = handle.getForce();
   tmp_trq = handle.getTorque();
 
-  for(unsigned int i=0;i < 3;i++)
+  for (unsigned int i = 0; i < 3; i++)
   {
-  	ft.force(i)=tmp_frc[i];
-  	ft.torque(i)=tmp_trq[i];
+    ft.force(i) = tmp_frc[i];
+    ft.torque(i) = tmp_trq[i];
   }
-  
+
   std::cout << "Reading HI " << this->ft.force(2) << std::endl;
 }
 } // namespace rct
 
 template <class T>
-void rct::robot::write_to_robot(T handle)
+void rct::robot::write_to_robot(const T &handle)
 {
-  std::cout << "writing to robot " << handle << std::endl;
+  std::cout << "writing to robot " << std::endl;
 }
 
-namespace rct
-{
-template <>
-void robot::write_to_robot<int>(int handle)
-{
-  std::cout << "writing to specialized robot " << handle << std::endl;
-}
-} // namespace rct
+// namespace rct
+// {
+// template <>
+// void robot::write_to_robot<int>(const int &handle)
+// {
+//   std::cout << "writing to specialized robot " << handle << std::endl;
+// }
+// } // namespace rct
+
+
 
 int main(int argc, char const *argv[])
 {
@@ -118,31 +120,39 @@ int main(int argc, char const *argv[])
 
   rct::kchain myChain = rct::kchain(str, root, ee, -10);
   // myChain.update();
-  myChain.get_status();
+  rct::Status junkStatus;
+  junkStatus = myChain.get_status("ee");
 
   std::cout << "initializing robot..." << std::endl;
   rct::robot myRobot = rct::robot(str, root, ee, -10);
-  myRobot.get_status();
+  junkStatus = myRobot.get_status("ee");
 
   myRobot.read_from_robot<std::string>("like now");
   myRobot.read_sensors<std::string>("read_sensors");
 
   const double *test1, *test2;
-  test1 = (const double*)malloc(3);
-  test2 = (const double*)malloc(3);
+  test1 = (const double *)malloc(3);
+  test2 = (const double *)malloc(3);
   ForceTorqueSensorHandle ft_handle = ForceTorqueSensorHandle("test", "test2", test1, test2);
   myRobot.read_sensors<ForceTorqueSensorHandle>(ft_handle);
 
-  myRobot.write_to_robot(1);
-  myRobot.write_to_robot<std::string>("I am a freaking template");
+
+  //test 2
+  Eigen::Matrix<double, 6, 1> acc_EE;
+  Eigen::Matrix<double, 6, 1> acc;
+  myRobot.acc2base(acc_EE, acc);
+  myRobot.get_inv_dynamics_cmd(acc, trq);
+  myRobot.get_joint_vel_cmd(acc, trq);
+  myRobot.send_commands<Eigen::MatrixXd>(trq);
+
 
   //control flow 1
   // myRobot.read_sensors();
-  // myRobot.get_status(cur_status); // with options, phaps update status
-  // controller.control(cur_status, cmd_acc_ee); //command is accelerations perhaps in ee_frame
-  // myRobot.acc2base(cmd_acc_ee, cmd_acc); //needed only if cmd acc is in ee_frame
+  // cur_status = myRobot.get_status("ee"); // with options, phaps update status
+  // cmd_acc_ee = controller.control(cur_status); //command is accelerations perhaps in ee_frame
+  // cmd_acc = myRobot.acc2base(cmd_acc_ee); //needed only if cmd acc is in ee_frame
   // myRobot.get_inv_dynamics_cmd(cmd_acc, torque);
-  // myRobot.send_commands(torque);
+  // myRobot.send_commands(torque); // probably arg is not needed
 
   //control flow 2
   // myRobot.read_sensors();

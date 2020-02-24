@@ -1,18 +1,25 @@
-
+// #include <robot.h>
+// #include <force_torque_sensor_interface.h>
 
 // namespace rct
 // {
-
-// template <class T>
-// void robot::read_HI(T handle)
+// template <>
+// void robot::read_from_robot<ForceTorqueSensorHandle>(const ForceTorqueSensorHandle &handle)
 // {
-//   for (unsigned int i = 0; i < handle.size(); i++)
+//   const double *tmp_frc, *tmp_trq;
+
+//   tmp_frc = handle.getForce();
+//   tmp_trq = handle.getTorque();
+
+//   for (unsigned int i = 0; i < 3; i++)
 //   {
-//     this->q(i) = handle[i].getPosition();
-//     this->dq(i) = handle[i].getVelocity();
-//     // jnt_trq(i) = handle[i].getEffort();
+//     ft.force(i) = tmp_frc[i];
+//     ft.torque(i) = tmp_trq[i];
 //   }
+
+//   std::cout << "Reading HI " << this->ft.force(2) << std::endl;
 // }
+// } // namespace rct
 
 // template <class T>
 // void robot::read_HI(T handle)
