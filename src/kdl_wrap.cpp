@@ -69,16 +69,16 @@ void kdl_wrap::compute_fk_kdl()
 
 void kdl_wrap::compute_fk()
 {
-  convert_jarray(chain, q, status.q_conf);
-  convert_jarray(chain, dq, status.dq_conf);
+  // convert_jarray(chain, q, status.q_conf);
+  // convert_jarray(chain, dq, status.dq_conf);
   compute_fk_kdl();
   KDL2EigenVec(state_frame, status.frame.pos, status.frame.vel, status.R, status.quat);
-  unwrap_rotation(status.frame.pos, xold, cntr);
+  // unwrap_rotation(status.frame.pos, xold, cntr);
 }
 
 void kdl_wrap::update()
 {
-  set_state();
+  // set_state(); //moved to robot::read()
   compute_fk();
   compute_jac();
   compute_djac();
@@ -87,6 +87,8 @@ void kdl_wrap::update()
 void kdl_wrap::set_state()
 {
   std::cout << "Theoretically q,dq,f.. are updated" << std::endl;
+  convert_jarray(chain, q, status.q_conf);
+  convert_jarray(chain, dq, status.dq_conf);
   q_dq_array.q = q;
   q_dq_array.qdot = dq;
 }
@@ -94,7 +96,7 @@ void kdl_wrap::set_state()
 void kdl_wrap::update_start()
 {
   update();
-  // this->x = this->xold
+  // this->status.frame.pos = this->xold;
   // and everything else that needs initialization at contoller.starting()
 }
 

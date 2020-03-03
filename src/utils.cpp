@@ -26,7 +26,7 @@ void KDL2EigenVec(const KDL::FrameVel &state_frame, Eigen::Matrix<double, 6, 1> 
         dx(3 + i) = state_frame.M.w[i];
     }
 
-    //state_frame.M.R.GetRPY(x(3), x(4), x(5));
+    // state_frame.M.R.GetRPY(x(3), x(4), x(5));
     state_frame.M.R.GetQuaternion(x(3), x(4), x(5), Q.w());
     Q.x() = x(3);
     Q.y() = x(4);

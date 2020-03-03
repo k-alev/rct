@@ -58,8 +58,12 @@ template <class T>
 void rct::robot::read_from_robot(const T &handle)
 {
   std::cout << "reading from robot unspecialized" << std::endl;
-  // ft.force.data = handle.getForce();
-  // this->ft.torque.data = handle.getTorque();
+  // q(0) = (3.1415/180)*274.91;
+  // q(1) = (3.1415/180)*174.98;
+  // q(2) = (3.1415/180)*78.99;
+  // q(3) = (3.1415/180)*243.17;
+  // q(4) = (3.1415/180)*83.78;
+  // q(5) = (3.1415/180)*75.28;
 }
 
 namespace rct
@@ -88,14 +92,14 @@ void rct::robot::write_to_robot(const T &handle)
   std::cout << "writing to robot " << std::endl;
 }
 
-// namespace rct
-// {
-// template <>
-// void robot::write_to_robot<int>(const int &handle)
-// {
-//   std::cout << "writing to specialized robot " << handle << std::endl;
-// }
-// } // namespace rct
+namespace rct
+{
+template <>
+void robot::write_to_robot<int>(const int &handle)
+{
+  std::cout << "writing to specialized robot " << handle << std::endl;
+}
+} // namespace rct
 
 
 
@@ -113,38 +117,37 @@ int main(int argc, char const *argv[])
   // wrapper.update();
 
   // test 1
-  Eigen::Matrix<double, 6, 1> ddx_cmd;
-  Eigen::Matrix<double, 6, 1> trq;
-  wrapper.get_inv_dynamics_cmd(ddx_cmd, trq);
-  // robot.set_command(trq)
+  // Eigen::Matrix<double, 6, 1> ddx_cmd;
+  // Eigen::Matrix<double, 6, 1> trq;
+  // wrapper.get_inv_dynamics_cmd(ddx_cmd, trq);
 
-  rct::kchain myChain = rct::kchain(str, root, ee, -10);
-  // myChain.update();
-  rct::Status junkStatus;
-  junkStatus = myChain.get_status("ee");
+  // rct::kchain myChain = rct::kchain(str, root, ee, -10);
+  // // myChain.update();
+  // rct::Status junkStatus;
+  // junkStatus = myChain.get_status("ee");
 
   std::cout << "initializing robot..." << std::endl;
   rct::robot myRobot = rct::robot(str, root, ee, -10);
-  junkStatus = myRobot.get_status("ee");
 
-  myRobot.read_from_robot<std::string>("like now");
+  // myRobot.read_from_robot<std::string>("like now");
   myRobot.read_sensors<std::string>("read_sensors");
+  rct::Status junkStatus;
+  junkStatus = myRobot.get_status("ee");
+  std::cout << "Pos: " <<junkStatus.frame.pos(0)<<", "<<junkStatus.frame.pos(1)<<", "<<junkStatus.frame.pos(2)<< std::endl;
+  std::cout << "Or: " <<junkStatus.frame.pos(3)<<", "<<junkStatus.frame.pos(4)<<", "<<junkStatus.frame.pos(5)<< std::endl;
+  std::cout << "PosEE: " <<junkStatus.frame_ee.pos(0)<<", "<<junkStatus.frame_ee.pos(1)<<", "<<junkStatus.frame_ee.pos(2)<< std::endl;
+  std::cout << "OrEE: " <<junkStatus.frame_ee.pos(3)<<", "<<junkStatus.frame_ee.pos(4)<<", "<<junkStatus.frame_ee.pos(5)<< std::endl;
+  std::cout << "eta: " <<junkStatus.quat.w()<<std::endl;
 
-  const double *test1, *test2;
-  test1 = (const double *)malloc(3);
-  test2 = (const double *)malloc(3);
-  ForceTorqueSensorHandle ft_handle = ForceTorqueSensorHandle("test", "test2", test1, test2);
-  myRobot.read_sensors<ForceTorqueSensorHandle>(ft_handle);
+  // const double *test1, *test2;
+  // test1 = (const double *)malloc(3);
+  // test2 = (const double *)malloc(3);
+  // ForceTorqueSensorHandle ft_handle = ForceTorqueSensorHandle("test", "test2", test1, test2);
+  // myRobot.read_sensors<ForceTorqueSensorHandle>(ft_handle);
 
 
-  //test 2
-  Eigen::Matrix<double, 6, 1> acc_EE;
-  Eigen::Matrix<double, 6, 1> acc;
-  myRobot.acc2base(acc_EE, acc);
-  myRobot.get_inv_dynamics_cmd(acc, trq);
-  myRobot.get_joint_vel_cmd(acc, trq);
-  myRobot.send_commands<Eigen::MatrixXd>(trq);
 
+  // #####################CONTROL FLOW PSEUDO CODE############################## //
 
   //control flow 1
   // myRobot.read_sensors();

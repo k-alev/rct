@@ -11,6 +11,7 @@ kchain::kchain(std::string robot_description, std::string base_name, std::string
 Status kchain::get_status(std::string options)
 {
     update();
+    R_T = status.R.transpose();
     if (1)
         compute_state_ee(); // optional, if not it just returns the copied kdl status
     return status;
@@ -26,7 +27,9 @@ void kchain::compute_state_ee()
 void kchain::pos2ee()
 {
     x_ee = R_T * x;
-    // quaternions are missing
+    quat_ee(0) = 0;
+    quat_ee(1) = 0;
+    quat_ee(2) = 0;
 }
 
 void kchain::vel2ee()
@@ -35,11 +38,11 @@ void kchain::vel2ee()
     w_ee = R_T * w;
 }
 
-void kchain::vel2base()
-{
-    dx = R * dx_ee + w.cross(x);
-    w = R * w_ee;
-}
+// void kchain::vel2base()
+// {
+//     dx = R * dx_ee + w.cross(x);
+//     w = R * w_ee;
+// }
 
 void kchain::acc2ee()
 {
@@ -47,11 +50,11 @@ void kchain::acc2ee()
     dw_ee = R_T * (dw - w.cross(w));
 }
 
-void kchain::acc2base()
-{
-    ddx = R * ddx_ee - 2 * w.cross(R * dx) - dw.cross(x) - w.cross(w.cross(x));
-    dw = R * dw_ee + w.cross(w);
-}
+// void kchain::acc2base()
+// {
+//     ddx = R * ddx_ee + 2 * w.cross(R * dx_ee) + dw.cross(x) + w.cross(w.cross(x));
+//     dw = R * dw_ee + w.cross(w);
+// }
 
 void kchain::acc2base(const Eigen::VectorXd &ee_acc, Eigen::VectorXd base_acc)
 {
@@ -60,9 +63,9 @@ void kchain::acc2base(const Eigen::VectorXd &ee_acc, Eigen::VectorXd base_acc)
     if (base_acc.rows() != 6)
         throw std::length_error("invalid matrix shape");
     Eigen::VectorXd _ddx_ee = ee_acc.segment<3>(0);
-    Eigen::VectorXd _dw_ee = ee_acc.segment<3>(2);
-    base_acc.segment<3>(0) = R * _ddx_ee - 2 * w.cross(R * dx) - dw.cross(x) - w.cross(w.cross(x));
-    base_acc.segment<3>(2) = R * _dw_ee + w.cross(w);
+    Eigen::VectorXd _dw_ee = ee_acc.segment<3>(3);
+    base_acc.segment<3>(0) = R * _ddx_ee + 2 * w.cross(R * dx_ee) + dw.cross(x) + w.cross(w.cross(x));
+    base_acc.segment<3>(3) = R * _dw_ee + w.cross(w);
 }
 
 void kchain::vel2base(const Eigen::VectorXd &ee_vel, Eigen::VectorXd base_vel)
@@ -72,9 +75,9 @@ void kchain::vel2base(const Eigen::VectorXd &ee_vel, Eigen::VectorXd base_vel)
     if (base_vel.rows() != 6)
         throw std::length_error("invalid matrix shape");
     Eigen::VectorXd _dx_ee = ee_vel.segment<3>(0);
-    Eigen::VectorXd _w_ee = ee_vel.segment<3>(2);
+    Eigen::VectorXd _w_ee = ee_vel.segment<3>(3);
     base_vel.segment<3>(0) = R * dx_ee + w.cross(x);
-    base_vel.segment<3>(2) = R * w_ee;
+    base_vel.segment<3>(3) = R * w_ee;
 }
 
 } // namespace rct
