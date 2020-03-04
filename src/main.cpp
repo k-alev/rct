@@ -87,7 +87,7 @@ void robot::read_from_robot<ForceTorqueSensorHandle>(const ForceTorqueSensorHand
 } // namespace rct
 
 template <class T>
-void rct::robot::write_to_robot(const T &handle)
+void rct::robot::write_to_robot(T &handle)
 {
   std::cout << "writing to robot " << std::endl;
 }
@@ -95,7 +95,7 @@ void rct::robot::write_to_robot(const T &handle)
 namespace rct
 {
 template <>
-void robot::write_to_robot<int>(const int &handle)
+void robot::write_to_robot<int>(int &handle)
 {
   std::cout << "writing to specialized robot " << handle << std::endl;
 }
@@ -130,7 +130,7 @@ int main(int argc, char const *argv[])
   rct::robot myRobot = rct::robot(str, root, ee, -10);
 
   // myRobot.read_from_robot<std::string>("like now");
-  myRobot.read_sensors<std::string>("read_sensors");
+  myRobot.read_sensor_handles<std::string>("read_sensors");
   rct::Status junkStatus;
   junkStatus = myRobot.get_status("ee");
   std::cout << "Pos: " <<junkStatus.frame.pos(0)<<", "<<junkStatus.frame.pos(1)<<", "<<junkStatus.frame.pos(2)<< std::endl;

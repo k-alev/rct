@@ -15,25 +15,37 @@ public:
         std::cout << "Robot Constructed!!!" << std::endl;
     };
 
-    template <class T>
-    void read_sensors(const T& xhandle)
+    // template <class T>
+    // void read_sensors(const T &xhandle)
+    // {
+    //     read_from_robot(xhandle);
+    //     set_state();
+    // };
+
+    void read_sensor_handles()
     {
-        read_from_robot(xhandle);
         set_state();
-    };
+    }
+
+    template <class T, class... Types>
+    void read_sensor_handles(T T1, Types... T2)
+    {
+        read_from_robot<T>(T1);
+        read_sensor_handles(T2...);
+    }
 
     template <class T>
-    void send_commands(const T& xhandle)
+    void send_commands(T &xhandle)
     {
         write_to_robot(xhandle);
         //other necessary stuff
     };
 
     template <class T>
-    void write_to_robot(const T& handle);
- 
+    void write_to_robot(T &handle);
+
     template <class T>
-    void read_from_robot(const T& handle);
+    void read_from_robot(const T &handle);
 
 };
 

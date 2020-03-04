@@ -47,6 +47,7 @@ protected:
   KDL::JntArray q;
   KDL::JntArray dq;
   KDL::Wrench ft;
+  KDL::JntArray torque;
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -68,7 +69,6 @@ private:
   KDL::Chain chain;
   KDL::JntArrayVel q_dq_array;
   KDL::JntArray v;
-  KDL::JntArray torque;
   KDL::Jacobian jac;
   KDL::Twist jdot_qdot;
   KDL::FrameVel state_frame;
