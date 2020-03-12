@@ -37,7 +37,7 @@ public:
     template <class T>
     void send_commands(T &xhandle)
     {
-        write_to_robot(xhandle);
+        write_to_robot<T>(xhandle);
         //other necessary stuff
     };
 

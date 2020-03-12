@@ -86,30 +86,85 @@ void kdl_wrap::update()
 
 void kdl_wrap::set_state()
 {
-  std::cout << "Theoretically q,dq,f.. are updated" << std::endl;
+  //is responsible to assign measurements to the corresponding internal variables
+  //should run in robot::read_sensor_handles()
+  // std::cout << "Theoretically q,dq,f.. are updated" << std::endl;
   convert_jarray(chain, q, status.q_conf);
   convert_jarray(chain, dq, status.dq_conf);
   q_dq_array.q = q;
   q_dq_array.qdot = dq;
+  convert_wrench(ft_base, status.frame.wrench);
 }
 
 void kdl_wrap::update_start()
 {
   update();
-  // this->status.frame.pos = this->xold;
+  this->status.frame.pos = this->xold;
   // and everything else that needs initialization at contoller.starting()
 }
 
-void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd &trq)
 {
-  convert_jarray(chain, ddx, v);
-  compute_id_kdl();
-  convert_jarray(chain, torque, trq);
+  std::string opt = "cartesian";
+  get_inv_dynamics_cmd(ddx, opt, trq);
 }
 
-void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt, Eigen::MatrixXd &trq)
 {
-  qdot = status.J.inverse()*vel;
+  if ((trq.rows() != chain.getNrOfJoints() || trq.cols() != 1))
+    throw std::length_error("invalid matrix shape");
+  // Eigen::MatrixXd v_conf = compute_JacInvPrd(chain, status.J, ddx - status.dJdq);
+  // convert_jarray(chain, ddx, v);
+  // compute_id_kdl();
+  get_inv_dynamics_cmd(ddx, opt);
+  convert_jarray(chain, torque, trq);
+  //should implement pinv solver too (perhaps overload with pseudo-inverse as arg)
+}
+
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx)
+{
+  std::string opt = "cartesian";
+  get_inv_dynamics_cmd(ddx, opt);
+}
+
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double& lambda)
+{
+  std::string opt = "cartesian";
+  get_inv_dynamics_cmd(ddx, opt, lambda);
+}
+
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt)
+{
+  double lambda = 0.0;
+  get_inv_dynamics_cmd(ddx, opt, lambda);
+}
+
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt, const double& lambda)
+{
+  // TODO: Add a more robust implementation for opt checking
+  Eigen::MatrixXd v_conf;
+  if (opt == "cartesian")
+  {
+    if ((ddx.rows() != 6 || ddx.cols() != 1))
+      throw std::length_error("invalid matrix shape");
+    v_conf = compute_JacInvPrd(chain, status.J, ddx - status.dJdq, lambda);
+    // v_conf = (status.J.transpose()*status.J).inverse()*status.J.transpose()*(ddx - status.dJdq);
+    // v_conf = status.J.transpose()*(status.J*status.J.transpose()).inverse()*(ddx - status.dJdq);
+  }
+  else
+  {
+    if ((ddx.rows() != chain.getNrOfJoints() || ddx.cols() != 1))
+      throw std::length_error("invalid matrix shape");
+    v_conf = ddx;
+  }
+  convert_jarray(chain, v_conf, v);
+  compute_id_kdl();
+}
+
+void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd &qdot)
+{
+  // TODO: Similar implementation with get_inv_dynamics_cmd
+  qdot = status.J.inverse() * vel;
   //should implement pinv solver too
 }
 

@@ -39,14 +39,12 @@ public:
     Eigen::Matrix<double,3,3> R;
     Eigen::MatrixXd q_conf;
     Eigen::MatrixXd dq_conf;
-    Eigen::Quaterniond quat = Eigen::Quaterniond(0,0,0,1);  
-    // Eigen::Matrix<double, 6, 1> w_l_base;
+    Eigen::Quaterniond quat = Eigen::Quaterniond(1,0,0,0);
     // Eigen::MatrixXd jacInv;
 
     // Other
     Frame frame = Frame();
     Frame frame_ee = Frame();
-
 
 };
 

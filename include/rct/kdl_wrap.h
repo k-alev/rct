@@ -26,8 +26,13 @@ public:
   kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv = -9.81);
   ~kdl_wrap();
   //Functions
-  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd trq);
-  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd qdot);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt, Eigen::MatrixXd &trq);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, Eigen::MatrixXd &trq);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt, const double& lambda);
+  void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double& lambda);
+  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd &qdot);
 
 protected:
   // Eigen declarations
@@ -46,8 +51,9 @@ protected:
   Status status = Status();
   KDL::JntArray q;
   KDL::JntArray dq;
-  KDL::Wrench ft;
+  KDL::Wrench ft_base;
   KDL::JntArray torque;
+  KDL::FrameVel state_frame;
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -71,7 +77,6 @@ private:
   KDL::JntArray v;
   KDL::Jacobian jac;
   KDL::Twist jdot_qdot;
-  KDL::FrameVel state_frame;
   KDL::Wrenches fext;
   // KDL::Wrench w_sensor_kdl;
   // KDL::Wrench w_base_kdl;

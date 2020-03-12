@@ -78,11 +78,11 @@ void robot::read_from_robot<ForceTorqueSensorHandle>(const ForceTorqueSensorHand
 
   for (unsigned int i = 0; i < 3; i++)
   {
-    ft.force(i) = tmp_frc[i];
-    ft.torque(i) = tmp_trq[i];
+    ft_base.force(i) = tmp_frc[i];
+    ft_base.torque(i) = tmp_trq[i];
   }
 
-  std::cout << "Reading HI " << this->ft.force(2) << std::endl;
+  std::cout << "Reading HI " << this->ft_base.force(2) << std::endl;
 }
 } // namespace rct
 
@@ -100,8 +100,6 @@ void robot::write_to_robot<int>(int &handle)
   std::cout << "writing to specialized robot " << handle << std::endl;
 }
 } // namespace rct
-
-
 
 int main(int argc, char const *argv[])
 {
@@ -133,19 +131,17 @@ int main(int argc, char const *argv[])
   myRobot.read_sensor_handles<std::string>("read_sensors");
   rct::Status junkStatus;
   junkStatus = myRobot.get_status("ee");
-  std::cout << "Pos: " <<junkStatus.frame.pos(0)<<", "<<junkStatus.frame.pos(1)<<", "<<junkStatus.frame.pos(2)<< std::endl;
-  std::cout << "Or: " <<junkStatus.frame.pos(3)<<", "<<junkStatus.frame.pos(4)<<", "<<junkStatus.frame.pos(5)<< std::endl;
-  std::cout << "PosEE: " <<junkStatus.frame_ee.pos(0)<<", "<<junkStatus.frame_ee.pos(1)<<", "<<junkStatus.frame_ee.pos(2)<< std::endl;
-  std::cout << "OrEE: " <<junkStatus.frame_ee.pos(3)<<", "<<junkStatus.frame_ee.pos(4)<<", "<<junkStatus.frame_ee.pos(5)<< std::endl;
-  std::cout << "eta: " <<junkStatus.quat.w()<<std::endl;
+  std::cout << "Pos: " << junkStatus.frame.pos(0) << ", " << junkStatus.frame.pos(1) << ", " << junkStatus.frame.pos(2) << std::endl;
+  std::cout << "Or: " << junkStatus.frame.pos(3) << ", " << junkStatus.frame.pos(4) << ", " << junkStatus.frame.pos(5) << std::endl;
+  std::cout << "PosEE: " << junkStatus.frame_ee.pos(0) << ", " << junkStatus.frame_ee.pos(1) << ", " << junkStatus.frame_ee.pos(2) << std::endl;
+  std::cout << "OrEE: " << junkStatus.frame_ee.pos(3) << ", " << junkStatus.frame_ee.pos(4) << ", " << junkStatus.frame_ee.pos(5) << std::endl;
+  std::cout << "eta: " << junkStatus.quat.w() << std::endl;
 
   // const double *test1, *test2;
   // test1 = (const double *)malloc(3);
   // test2 = (const double *)malloc(3);
   // ForceTorqueSensorHandle ft_handle = ForceTorqueSensorHandle("test", "test2", test1, test2);
   // myRobot.read_sensors<ForceTorqueSensorHandle>(ft_handle);
-
-
 
   // #####################CONTROL FLOW PSEUDO CODE############################## //
 
