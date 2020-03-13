@@ -32,7 +32,8 @@ public:
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx);
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt, const double& lambda);
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double& lambda);
-  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd &qdot);
+  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, const double &lambda);
+  void get_joint_vel_cmd(const Eigen::MatrixXd &vel, const std::string& opt, const double& lambda);
 
 protected:
   // Eigen declarations

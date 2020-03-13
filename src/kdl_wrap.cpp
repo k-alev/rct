@@ -127,19 +127,19 @@ void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx)
   get_inv_dynamics_cmd(ddx, opt);
 }
 
-void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double& lambda)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double &lambda)
 {
   std::string opt = "cartesian";
   get_inv_dynamics_cmd(ddx, opt, lambda);
 }
 
-void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt)
 {
   double lambda = 0.0;
   get_inv_dynamics_cmd(ddx, opt, lambda);
 }
 
-void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string& opt, const double& lambda)
+void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt, const double &lambda)
 {
   // TODO: Add a more robust implementation for opt checking
   Eigen::MatrixXd v_conf;
@@ -161,11 +161,30 @@ void kdl_wrap::get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::strin
   compute_id_kdl();
 }
 
-void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, Eigen::MatrixXd &qdot)
+void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, const double &lambda)
 {
   // TODO: Similar implementation with get_inv_dynamics_cmd
-  qdot = status.J.inverse() * vel;
-  //should implement pinv solver too
+  std::string opt = "cartesian";
+  get_joint_vel_cmd(vel, opt, lambda);
+}
+
+void kdl_wrap::get_joint_vel_cmd(const Eigen::MatrixXd &vel, const std::string &opt, const double &lambda)
+{
+  // TODO: Similar implementation with get_inv_dynamics_cmd
+  // Eigen::MatrixXd qdot = status.J.inverse() * vel;
+  if (opt == "cartesian")
+  {
+    if ((vel.rows() != 6 || vel.cols() != 1))
+      throw std::length_error("invalid matrix shape");
+    Eigen::MatrixXd qdot = compute_JacInvPrd(chain, status.J, vel, lambda);
+    convert_jarray(chain, qdot, torque);
+  }
+  else
+  {
+    if ((vel.rows() != chain.getNrOfJoints() || vel.cols() != 1))
+      throw std::length_error("invalid matrix shape");
+    convert_jarray(chain, vel, torque);
+  }
 }
 
 void kdl_wrap::init_solvers(std::string robot_description, std::string base_name, std::string ee_name)

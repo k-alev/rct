@@ -83,24 +83,12 @@ Eigen::VectorXd kchain::acc2base(const Eigen::VectorXd &ee_acc)
 {
     if (ee_acc.rows() != 6)
         throw std::length_error("invalid matrix shape");
-    // base_acc.resize(6);
     Eigen::VectorXd _ddx_ee = ee_acc.segment<3>(0);
     Eigen::VectorXd _dw_ee = ee_acc.segment<3>(3);
     Eigen::Matrix<double, 6, 1> base_acc;
     // base_acc.segment<3>(0) = R * _ddx_ee + 2 * w.cross(R * dx_ee) + dw.cross(x) + w.cross(w.cross(x)); //dw should be computed first
     base_acc.segment<3>(3) = R * _dw_ee + w.cross(w);
     base_acc.segment<3>(0) = R * _ddx_ee + 2 * w.cross(R * dx_ee) + base_acc.segment<3>(3).cross(x) + w.cross(w.cross(x));
-
-    // std::cout<<"w"<<std::endl;
-    // std::cout<<w<<std::endl;
-    // std::cout<<"_ddx_ee"<<std::endl;
-    // std::cout<<_ddx_ee<<std::endl;
-    // std::cout<<"_dw_ee"<<std::endl;
-    // std::cout<<_dw_ee<<std::endl;
-    // std::cout<<"R"<<std::endl;
-    // std::cout<<R<<std::endl;
-    // std::cout<<"base_acc"<<std::endl;
-    // std::cout<<base_acc<<std::endl;
 
     return base_acc;
 }
@@ -112,8 +100,10 @@ Eigen::VectorXd kchain::vel2base(const Eigen::VectorXd &ee_vel)
     Eigen::VectorXd _dx_ee = ee_vel.segment<3>(0);
     Eigen::VectorXd _w_ee = ee_vel.segment<3>(3);
     Eigen::Matrix<double, 6, 1> base_vel;
-    base_vel.segment<3>(0) = R * dx_ee + w.cross(x);
-    base_vel.segment<3>(3) = R * w_ee;
+    base_vel.segment<3>(0) = R * _dx_ee + w.cross(x);
+    base_vel.segment<3>(3) = R * _w_ee;
+
+    return base_vel;
 }
 
 } // namespace rct
