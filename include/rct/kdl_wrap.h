@@ -7,15 +7,18 @@
 #include <kdl_parser/kdl_parser.hpp>
 #include <kdl/frames.hpp>
 #include <kdl/jacobian.hpp>
-#include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/chainfksolvervel_recursive.hpp>
+// #include <kdl/chainfksolverpos_recursive.hpp>
+// #include <kdl/chainfksolvervel_recursive.hpp>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainjnttojacsolver.hpp>
 #include <kdl/chaindynparam.hpp>
-#include <chainJntToJacDotSolver.h>
+#include <kdl_extras/chainJntToJacDotSolver.h>
+#include <kdl_extras/chainfksolvervel_recursive.hpp>
 
 #include <status.h>
 #include <utils.h>
+
+
 
 namespace rct
 {
@@ -23,7 +26,7 @@ class kdl_wrap
 {
 
 public:
-  kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv = -9.81);
+  kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv = -9.81, bool ENABLE_LINKS = false);
   ~kdl_wrap();
   //Functions
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const std::string &opt, Eigen::MatrixXd &trq);
@@ -34,6 +37,8 @@ public:
   void get_inv_dynamics_cmd(const Eigen::MatrixXd &ddx, const double& lambda);
   void get_joint_vel_cmd(const Eigen::MatrixXd &vel, const double &lambda);
   void get_joint_vel_cmd(const Eigen::MatrixXd &vel, const std::string& opt, const double& lambda);
+  std::vector<Status> get_links_status();
+  KDL::Chain get_kdl_chain();
 
 protected:
   // Eigen declarations
@@ -50,11 +55,14 @@ protected:
   void update();
   void update_start();
   Status status = Status();
+  std::vector<Status> statuser;
   KDL::JntArray q;
   KDL::JntArray dq;
   KDL::Wrench ft_base;
   KDL::JntArray torque;
   KDL::FrameVel state_frame;
+  std::vector<KDL::FrameVel> state_frames;
+
 
 private:
   void init_solvers(std::string robot_description, std::string base_name, std::string ee_name);
@@ -67,7 +75,7 @@ private:
   void compute_djac();
   
   //KDL declarations
-  KDL::ChainFkSolverVel_recursive *fksolver;
+  KDL::ChainFkSolverVel_recursive_extras *fksolver;
   KDL::ChainIdSolver_RNE *idsolver;
   KDL::ChainJntToJacSolver *jacsolver;
   KDL::ChainJntToJacDotSolver *jacdotsolver;
@@ -89,6 +97,7 @@ private:
   std::string _ee_name;
   double _g;
   Eigen::Matrix<double, 6, 1> xold;
+  bool _ENABLE_LINKS;
 
 };
 } // namespace rct

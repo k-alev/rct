@@ -125,7 +125,7 @@ int main(int argc, char const *argv[])
   // junkStatus = myChain.get_status("ee");
 
   std::cout << "initializing robot..." << std::endl;
-  rct::robot myRobot = rct::robot(str, root, ee, -10);
+  rct::robot myRobot = rct::robot(str, root, ee, -10, 1);
 
   // myRobot.read_from_robot<std::string>("like now");
   myRobot.read_sensor_handles<std::string>("read_sensors");

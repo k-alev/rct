@@ -2,8 +2,8 @@
 
 namespace rct
 {
-kchain::kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv)
-    : kdl_wrap{robot_description, base_name, ee_name, grv}
+kchain::kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv, bool ENABLE_LINKS)
+    : kdl_wrap{robot_description, base_name, ee_name, grv, ENABLE_LINKS}
 {
     std::cout << "Chain Constructed!!!" << std::endl;
 }

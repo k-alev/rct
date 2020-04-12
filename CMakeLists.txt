@@ -12,7 +12,8 @@ add_library(rct_lib STATIC
   src/kdl_wrap.cpp
   src/kchain.cpp
   src/utils.cpp
-  src/chainJntToJacDotSolver.cpp
+  src/kdl_extras/chainJntToJacDotSolver.cpp
+  src/kdl_extras/chainfksolvervel_recursive.cpp
 	)
 
 add_executable(test_main
@@ -40,9 +41,11 @@ target_include_directories(rct_lib PUBLIC
 
 # Install                       
 set(header_path "${${PROJECT_NAME}_SOURCE_DIR}/include/rct")
-file(GLOB_RECURSE header "${header_path}/*.h")
+file(GLOB header "${header_path}/*.h")
+file(GLOB_RECURSE header_kdl "${header_path}/kdl_extras/*.h*")
 
 install(FILES ${header} DESTINATION "${include_dest}")
+install(FILES ${header_kdl} DESTINATION "${include_dest}/kdl_extras")
 install(FILES rct_lib-config.cmake DESTINATION ${lib_dest_generic})
 install(TARGETS rct_lib EXPORT rct_lib-export DESTINATION "${lib_dest}")
 install(EXPORT rct_lib-export DESTINATION "${lib_dest}")

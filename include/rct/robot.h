@@ -9,8 +9,8 @@ namespace rct
 class robot : public kchain
 {
 public:
-    robot(std::string robot_description, std::string base_name, std::string ee_name, double grv)
-        : kchain{robot_description, base_name, ee_name, grv}
+    robot(std::string robot_description, std::string base_name, std::string ee_name, double grv, bool ENABLE_LINKS = false)
+        : kchain{robot_description, base_name, ee_name, grv, ENABLE_LINKS}
     {
         std::cout << "Robot Constructed!!!" << std::endl;
     };

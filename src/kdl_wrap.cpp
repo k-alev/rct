@@ -3,7 +3,8 @@
 
 namespace rct
 {
-kdl_wrap::kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv) : _robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name}, _g{grv}
+kdl_wrap::kdl_wrap(std::string robot_description, std::string base_name, std::string ee_name, double grv, bool ENABLE_LINKS) 
+: _robot_description{robot_description}, _base_name{base_name}, _ee_name{ee_name}, _g{grv}, _ENABLE_LINKS{ENABLE_LINKS}
 {
   init_solvers(_robot_description, _base_name, _ee_name);
   q.resize(chain.getNrOfJoints());
@@ -20,6 +21,9 @@ kdl_wrap::kdl_wrap(std::string robot_description, std::string base_name, std::st
 
   status.q_conf.resize(chain.getNrOfJoints(), 1);
   status.dq_conf.resize(chain.getNrOfJoints(), 1);
+
+  state_frames.resize(chain.getNrOfSegments());
+  statuser.resize(chain.getNrOfSegments());
 }
 
 kdl_wrap::~kdl_wrap()
@@ -29,6 +33,18 @@ kdl_wrap::~kdl_wrap()
   delete jacsolver;
   delete jacdotsolver;
   // delete chDynParam;
+}
+
+std::vector<Status> kdl_wrap::get_links_status()
+{
+  if (!_ENABLE_LINKS)
+    throw std::runtime_error("Full chain solver is not enabled. ENABLE_LINKS param should be set to TRUE.");
+  return statuser;
+}
+
+KDL::Chain kdl_wrap::get_kdl_chain()
+{
+  return chain;
 }
 
 void kdl_wrap::compute_id_kdl()
@@ -63,8 +79,17 @@ void kdl_wrap::compute_djac()
 
 void kdl_wrap::compute_fk_kdl()
 {
-  if (fksolver->JntToCart(q_dq_array, state_frame, -1) < 0)
-    throw std::runtime_error("KDL forward kinematics solver failed.");
+  if(!_ENABLE_LINKS)
+  {
+    if (fksolver->JntToCart(q_dq_array, state_frame, -1) < 0)
+      throw std::runtime_error("KDL forward kinematics solver failed.");
+  }
+  else
+  {
+    if (fksolver->JntToCart(q_dq_array, state_frames, -1) < 0)
+      throw std::runtime_error("KDL forward kinematics solver failed.");
+    state_frame = state_frames.back();
+  }
 }
 
 void kdl_wrap::compute_fk()
@@ -73,6 +98,11 @@ void kdl_wrap::compute_fk()
   // convert_jarray(chain, dq, status.dq_conf);
   compute_fk_kdl();
   KDL2EigenVec(state_frame, status.frame.pos, status.frame.vel, status.R, status.quat);
+  if(_ENABLE_LINKS)
+  {
+    for(int i =0; i<statuser.size(); i++)
+          KDL2EigenVec(state_frames[i], statuser[i].frame.pos, statuser[i].frame.vel, statuser[i].R, statuser[i].quat);
+  }
   // unwrap_rotation(status.frame.pos, xold, cntr);
 }
 
@@ -199,7 +229,7 @@ void kdl_wrap::init_solvers(std::string robot_description, std::string base_name
 
   KDL::Vector g(0.0, 0.0, _g);
 
-  if ((fksolver = new KDL::ChainFkSolverVel_recursive(chain)) == NULL)
+  if ((fksolver = new KDL::ChainFkSolverVel_recursive_extras(chain)) == NULL)
     throw std::runtime_error("Failed to create ChainFkSolverVel_recursive.");
 
   if ((jacsolver = new KDL::ChainJntToJacSolver(chain)) == NULL)
@@ -216,6 +246,7 @@ void kdl_wrap::init_solvers(std::string robot_description, std::string base_name
   //   std::cout << "Failed to create Chain Dyn. Params." << std::endl;
   //   throw;
   // }
+
 }
 
 } // namespace rct

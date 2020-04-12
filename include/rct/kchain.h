@@ -9,7 +9,7 @@ namespace rct
 class kchain : public kdl_wrap
 {
 public:
-    kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv);
+    kchain(std::string robot_description, std::string base_name, std::string ee_name, double grv, bool ENABLE_LINKS = false);
 
     Status get_status(std::string options);
     Status get_status_start(std::string options);
